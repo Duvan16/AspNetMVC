@@ -8,18 +8,22 @@ namespace AspNetMVC.Controllers
 {
     public class HomeController : Controller
     {
-        [Authorize]
         // GET: Home
         public string Index()
         {
             return "Este es mi controlador Home";
         }
 
-        [Authorize (Roles = "Admin")]
-        [OutputCache (Duration = 10)]
+        [ActionName ("Hora")]
         public string HoraActual()
         {
-            return DateTime.Now.ToString("T");
+            return CadenaHora();
+        }
+
+        [NonAction]
+        public string CadenaHora()
+        {
+            return "Son las " + DateTime.Now.ToString("T");
         }
     }
 }
