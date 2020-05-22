@@ -13,15 +13,5 @@ namespace AspNetMVC.Controllers
         {
             return View();
         }
-
-        public string MiControlador()
-        {
-            return "Este es Mi Controlador";
-        }
-
-        public ActionResult MiVista()
-        {
-            return View();
-        }
     }
 }
