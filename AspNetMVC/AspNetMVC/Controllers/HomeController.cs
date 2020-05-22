@@ -9,21 +9,19 @@ namespace AspNetMVC.Controllers
     public class HomeController : Controller
     {
         // GET: Home
-        public string Index()
+        public ActionResult Index()
         {
-            return "Este es mi controlador Home";
+            return View();
         }
 
-        [ActionName ("Hora")]
-        public string HoraActual()
+        public string MiControlador()
         {
-            return CadenaHora();
+            return "Este es Mi Controlador";
         }
 
-        [NonAction]
-        public string CadenaHora()
+        public ActionResult MiVista()
         {
-            return "Son las " + DateTime.Now.ToString("T");
+            return View();
         }
     }
 }
