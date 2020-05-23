@@ -10,10 +10,29 @@ namespace AspNetMVC.Controllers
 {
     public class ClientesController : Controller
     {
+        public static List<Clientes> empList = new List<Clientes>
+        {
+            new Clientes
+                {
+                    ID = 1,
+                    nombre = "Duvan",
+                    FechaAlta = DateTime.Parse(DateTime.Today.ToString()),
+                    edad = 30
+                },
+                new Clientes
+                {
+                    ID = 2,
+                    nombre = "Patricia",
+                    FechaAlta = DateTime.Parse(DateTime.Today.ToString()),
+                    edad = 35
+                },
+        };
+
+
         // GET: Clientes
         public ActionResult Index()
         {
-            var Clientes = from e in TodoLosClientes()
+            var Clientes = from e in empList
                            orderby e.ID
                            select e;
             return View(Clientes);
@@ -50,7 +69,9 @@ namespace AspNetMVC.Controllers
         // GET: Clientes/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            List<Clientes> emplList = TodoLosClientes();
+            var Clientes = empList.Single(m => m.ID == id);
+            return View(Clientes);
         }
 
         // POST: Clientes/Edit/5
@@ -59,9 +80,10 @@ namespace AspNetMVC.Controllers
         {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
+                var Clientes = empList.Single(m => m.ID == id);
+                if (TryUpdateModel(Clientes))
+                    return RedirectToAction("Index");
+                return View(Clientes);
             }
             catch
             {
