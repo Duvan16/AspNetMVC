@@ -32,6 +32,9 @@ namespace AspNetMVC.Controllers
 
         // GET: Clientes.
         private EmpDBContext db = new EmpDBContext();
+
+        //[OutputCache(Duration = 60)]
+        [OutputCache(CacheProfile = "Cache5Minutos")]
         public ActionResult Index()
         {
             var Clientes = from e in db.Clientes
@@ -40,10 +43,13 @@ namespace AspNetMVC.Controllers
             return View(Clientes);
         }
 
+
         // GET: Clientes/Details/5
+        [OutputCache(Duration = int.MaxValue, VaryByParam = "id")]
         public ActionResult Details(int id)
         {
-            return View();
+            var cliente = db.Clientes.SingleOrDefault(e => e.ID == id);
+            return View(cliente);
         }
 
         // GET: Clientes/Create
@@ -107,7 +113,7 @@ namespace AspNetMVC.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                    
+
                 return View(Clientes);
             }
             catch
