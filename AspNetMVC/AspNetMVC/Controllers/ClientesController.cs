@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.WebSockets;
+using static AspNetMVC.Models.Clientes;
 
 namespace AspNetMVC.Controllers
 {
@@ -29,10 +30,11 @@ namespace AspNetMVC.Controllers
         };
 
 
-        // GET: Clientes
+        // GET: Clientes.
+        private EmpDBContext db = new EmpDBContext();
         public ActionResult Index()
         {
-            var Clientes = from e in empList
+            var Clientes = from e in db.Clientes
                            orderby e.ID
                            select e;
             return View(Clientes);
@@ -76,7 +78,8 @@ namespace AspNetMVC.Controllers
         {
             try
             {
-                empList.Add(emp);
+                db.Clientes.Add(emp);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
             catch
@@ -88,8 +91,7 @@ namespace AspNetMVC.Controllers
         // GET: Clientes/Edit/5
         public ActionResult Edit(int id)
         {
-            List<Clientes> emplList = TodoLosClientes();
-            var Clientes = empList.Single(m => m.ID == id);
+            var Clientes = db.Clientes.Single(m => m.ID == id);
             return View(Clientes);
         }
 
@@ -99,9 +101,13 @@ namespace AspNetMVC.Controllers
         {
             try
             {
-                var Clientes = empList.Single(m => m.ID == id);
+                var Clientes = db.Clientes.Single(m => m.ID == id);
                 if (TryUpdateModel(Clientes))
+                {
+                    db.SaveChanges();
                     return RedirectToAction("Index");
+                }
+                    
                 return View(Clientes);
             }
             catch
