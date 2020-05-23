@@ -52,12 +52,31 @@ namespace AspNetMVC.Controllers
 
         // POST: Clientes/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        //public ActionResult Create(FormCollection collection)
+        //{
+        //    try
+        //    {
+        //        // TODO: Add insert logic here
+        //        Clientes emp = new Models.Clientes();
+        //        emp.nombre = collection["nombre"];
+        //        DateTime jDate;
+        //        DateTime.TryParse(collection["DOB"], out jDate);
+        //        emp.FechaAlta = jDate;
+        //        string edad = collection["edad"];
+        //        emp.edad = Int32.Parse(edad);
+        //        empList.Add(emp);
+        //        return RedirectToAction("Index");
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
+        public ActionResult Create(Clientes emp)
         {
             try
             {
-                // TODO: Add insert logic here
-
+                empList.Add(emp);
                 return RedirectToAction("Index");
             }
             catch
