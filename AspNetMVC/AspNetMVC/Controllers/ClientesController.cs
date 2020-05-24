@@ -1,55 +1,38 @@
-﻿using AspNetMVC.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.WebSockets;
-using static AspNetMVC.Models.Clientes;
+using AspNetMVC.Models;
 
 namespace AspNetMVC.Controllers
 {
     public class ClientesController : Controller
     {
-        public static List<Clientes> empList = new List<Clientes>
-        {
-            new Clientes
-                {
-                    ID = 1,
-                    nombre = "Duvan",
-                    FechaAlta = DateTime.Parse(DateTime.Today.ToString()),
-                    edad = 30
-                },
-                new Clientes
-                {
-                    ID = 2,
-                    nombre = "Patricia",
-                    FechaAlta = DateTime.Parse(DateTime.Today.ToString()),
-                    edad = 35
-                },
-        };
-
-
-        // GET: Clientes.
         private EmpDBContext db = new EmpDBContext();
 
-        //[OutputCache(Duration = 60)]
-        [OutputCache(CacheProfile = "Cache5Minutos")]
+        // GET: Clientes
         public ActionResult Index()
         {
-            var Clientes = from e in db.Clientes
-                           orderby e.ID
-                           select e;
-            return View(Clientes);
+            return View(db.Clientes.ToList());
         }
 
-
         // GET: Clientes/Details/5
-        [OutputCache(Duration = int.MaxValue, VaryByParam = "id")]
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
-            var cliente = db.Clientes.SingleOrDefault(e => e.ID == id);
-            return View(cliente);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Clientes clientes = db.Clientes.Find(id);
+            if (clientes == null)
+            {
+                return HttpNotFound();
+            }
+            return View(clientes);
         }
 
         // GET: Clientes/Create
@@ -59,113 +42,86 @@ namespace AspNetMVC.Controllers
         }
 
         // POST: Clientes/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        //public ActionResult Create(FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add insert logic here
-        //        Clientes emp = new Models.Clientes();
-        //        emp.nombre = collection["nombre"];
-        //        DateTime jDate;
-        //        DateTime.TryParse(collection["DOB"], out jDate);
-        //        emp.FechaAlta = jDate;
-        //        string edad = collection["edad"];
-        //        emp.edad = Int32.Parse(edad);
-        //        empList.Add(emp);
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-        public ActionResult Create(Clientes emp)
+        [ValidateAntiForgeryToken]
+        public ActionResult Create([Bind(Include = "ID,nombre,FechaAlta,edad")] Clientes clientes)
         {
-            try
+            if (ModelState.IsValid)
             {
-                db.Clientes.Add(emp);
+                db.Clientes.Add(clientes);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+
+            return View(clientes);
         }
 
         // GET: Clientes/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            var Clientes = db.Clientes.Single(m => m.ID == id);
-            return View(Clientes);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Clientes clientes = db.Clientes.Find(id);
+            if (clientes == null)
+            {
+                return HttpNotFound();
+            }
+            return View(clientes);
         }
 
         // POST: Clientes/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "ID,nombre,FechaAlta,edad")] Clientes clientes)
         {
-            try
+            if (ModelState.IsValid)
             {
-                var Clientes = db.Clientes.Single(m => m.ID == id);
-                if (TryUpdateModel(Clientes))
-                {
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-
-                return View(Clientes);
+                db.Entry(clientes).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+            return View(clientes);
         }
 
         // GET: Clientes/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Clientes clientes = db.Clientes.Find(id);
+            if (clientes == null)
+            {
+                return HttpNotFound();
+            }
+            return View(clientes);
         }
 
         // POST: Clientes/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
         {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            Clientes clientes = db.Clientes.Find(id);
+            db.Clientes.Remove(clientes);
+            db.SaveChanges();
+            return RedirectToAction("Index");
         }
 
-        [NonAction]
-        public List<Clientes> TodoLosClientes()
+        protected override void Dispose(bool disposing)
         {
-            return new List<Clientes>
+            if (disposing)
             {
-                new Clientes
-                {
-                    ID = 1,
-                    nombre = "Duvan",
-                    FechaAlta = DateTime.Parse(DateTime.Today.ToString()),
-                    edad = 30
-                },
-                new Clientes
-                {
-                    ID = 2,
-                    nombre = "Patricia",
-                    FechaAlta = DateTime.Parse(DateTime.Today.ToString()),
-                    edad = 35
-                }
-            };
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
-
-
     }
 }
