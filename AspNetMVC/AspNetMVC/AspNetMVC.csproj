@@ -115,11 +115,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202005230433075_InitialCreate.cs" />
-    <Compile Include="Migrations\202005230433075_InitialCreate.designer.cs">
+    <Compile Include="Migrations\202005230433075_InitialCreate.Designer.cs">
       <DependentUpon>202005230433075_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202005230502052_Dataannotations.cs" />
-    <Compile Include="Migrations\202005230502052_Dataannotations.designer.cs">
+    <Compile Include="Migrations\202005230502052_Dataannotations.Designer.cs">
       <DependentUpon>202005230502052_Dataannotations.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
